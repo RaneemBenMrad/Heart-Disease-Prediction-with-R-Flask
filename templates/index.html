@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prédiction de Maladie Cardiaque</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #007bff; /* Bleu médical vibrant */
+      --secondary-color: #1e2a44; /* Bleu marine foncé pour le texte */
+      --accent-color: #e6f0fa; /* Bleu clair pour les fonds */
+      --dark-color: #0a1428; /* Bleu très foncé pour le footer */
+      --light-color: #ffffff; /* Blanc pour le corps */
+      --success-color: #28a745; /* Vert pour les états de succès */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light-color);
+      color: var(--secondary-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: var(--light-color);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      transition: color 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+      color: #0056b3;
+    }
+
+    .nav-link {
+      color: var(--secondary-color);
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 0.5rem 1.25rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover, .nav-link:focus {
+      color: var(--primary-color);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(135deg, rgba(0, 123, 255, 0.9), rgba(40, 167, 69, 0.9)),
+        url('https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      color: var(--light-color);
+      padding: 6rem 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-section h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    .hero-section p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    /* Form Section */
+    .form-section {
+      background: var(--accent-color);
+      padding: 4rem 0;
+    }
+
+    .form-card {
+      background: var(--light-color);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-card h2 {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 1px solid #ced4da;
+      padding: 0.75rem;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: var(--secondary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      border: none;
+      border-radius: 50px;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      font-size: 1rem;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Result Display */
+    .result-section {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .result-section h2 {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .result-section p {
+      font-size: 1.2rem;
+      color: var(--secondary-color);
+      background: var(--accent-color);
+      padding: 1rem;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--dark-color);
+      color: #90a4ae;
+      padding: 2rem 0;
+      text-align: center;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: #0056b3;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .hero-section h1 {
+        font-size: 2rem;
+      }
+
+      .hero-section p {
+        font-size: 1rem;
+      }
+
+      .form-card {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .hero-section {
+        padding: 4rem 0;
+      }
+
+      .hero-section h1 {
+        font-size: 1.75rem;
+      }
+
+      .form-card {
+        padding: 1rem;
+      }
+
+      .btn-primary {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#"><i class="fas fa-heartbeat me-2"></i>HeartCare</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="#">Accueil</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">À Propos</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <h1>Prédiction des Maladies Cardiaques</h1>
+      <p>Utilisez notre outil avancé pour évaluer votre risque de maladie cardiaque en quelques clics.</p>
+    </div>
+  </section>
+
+  <!-- Form Section -->
+  <section class="form-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="form-card">
+            <h2><i class="fas fa-stethoscope me-2"></i>Entrez les Données du Patient</h2>
+            <form method="POST">
+              <div class="mb-3">
+                <label class="form-label">Âge :</label>
+                <input type="number" class="form-control" name="age" min="1" max="120" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Sexe :</label>
+                <select class="form-select" name="sex" required>
+                  <option value="M">Masculin</option>
+                  <option value="F">Féminin</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Type de douleur thoracique :</label>
+                <select class="form-select" name="cp" required>
+                  <option value="1">Angine typique</option>
+                  <option value="2">Angine atypique</option>
+                  <option value="3">Douleur non angineuse</option>
+                  <option value="4">Asymptomatique</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Pression artérielle au repos (mm Hg) :</label>
+                <input type="number" class="form-control" name="trestbps" min="50" max="300" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Cholestérol (mg/dl) :</label>
+                <input type="number" class="form-control" name="chol" min="50" max="600" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Électrocardiogramme au repos :</label>
+                <select class="form-select" name="restecg" required>
+                  <option value="0">Normal</option>
+                  <option value="1">Anomalie ST-T</option>
+                  <option value="2">Hypertrophie ventriculaire</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Fréquence cardiaque maximale :</label>
+                <input type="number" class="form-control" name="thalach" min="50" max="250" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Angine induite par l'exercice :</label>
+                <select class="form-select" name="exang" required>
+                  <option value="0">Non</option>
+                  <option value="1">Oui</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Dépression ST (oldpeak) :</label>
+                <input type="number" step="0.1" class="form-control" name="oldpeak" min="0" max="10" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Pente du segment ST :</label>
+                <select class="form-select" name="slope" required>
+                  <option value="1">Ascendante</option>
+                  <option value="2">Plate</option>
+                  <option value="3">Descendante</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Nombre de vaisseaux colorés (0-3) :</label>
+                <select class="form-select" name="ca" required>
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Scan au thallium :</label>
+                <select class="form-select" name="thal" required>
+                  <option value="3">Normal</option>
+                  <option value="6">Défaut fixe</option>
+                  <option value="7">Défaut réversible</option>
+                </select>
+              </div>
+
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle me-2"></i>Prédire</button>
+              </div>
+            </form>
+
+            {% if prediction %}
+              <div class="result-section">
+                <h2>Résultat</h2>
+                <p>{{ prediction }}</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>© 2025 HeartCare. Tous droits réservés. | <a href="#">Politique de confidentialité</a></p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
